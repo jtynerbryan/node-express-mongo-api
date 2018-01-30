@@ -1,33 +1,48 @@
+// UserController.js
 var express = require('express');
 var router = express.Router();
 var bodyParser = require('body-parser');
-router.use(bodyParser.urlencoded({extended: true}));
-router.use(bodyParser.json());
-
+router.use(bodyParser.urlencoded({ extended: true }));
 var User = require('./User');
 
-// Create new User
+
+// CREATES A NEW USER
 router.post('/', (req, res) => {
   User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
+    name : req.body.name,
+    email : req.body.email,
+    password : req.body.password
   },
-  (err, user)  => {
-    if (err) return res.status(500).send("There was problem adding the information to the database");
+  (err, user) => {
+    if (err) return res.status(500).send("There was a problem adding the information to the database.");
     res.status(200).send(user);
   });
 });
 
-// Get all Users
-router.get('/', (req, res) => {
 
+// RETURNS ALL THE USERS IN THE DATABASE
+router.get('/', (req, res) => {
   User.find({}, (err, users) => {
-    if (err) return res.status(500).send("There was a problem finding the users");
+    if (err) return res.status(500).send("There was a problem finding the users.");
     res.status(200).send(users);
   });
-
 });
+
+// Return a specific User based on id
+router.get('/:id', (req, res) => {
+  User.findById(req.params.id, (err, user) => {
+    if (err) return res.status(500).send("There was a problem finding the user");
+    if (!user) return res.status(404).send("No user found");
+    res.status(200).send(user);
+  });
+});
+
+
+
+
+
+
+
 
 
 module.exports = router;
