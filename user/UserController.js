@@ -19,7 +19,6 @@ router.post('/', (req, res) => {
   });
 });
 
-
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/', (req, res) => {
   User.find({}, (err, users) => {
@@ -28,7 +27,7 @@ router.get('/', (req, res) => {
   });
 });
 
-// Return a specific User based on id
+// RETURN A SPECIFIC USER BY ID
 router.get('/:id', (req, res) => {
   User.findById(req.params.id, (err, user) => {
     if (err) return res.status(500).send("There was a problem finding the user");
@@ -37,12 +36,27 @@ router.get('/:id', (req, res) => {
   });
 });
 
+// DELETE A USER FROM THE DATABASE
+router.delete('/:id', (req, res) => {
+  User.findByIdAndRemove(req.params.id, (err, user) => {
+    if (err) return res.status(500).send("There was a problem deleting the user");
+    res.status(200).send(`User ${user.name} was successfully deleted from the database`);
+  });
+});
 
+router.delete('/:id', function (req, res) {
+  User.findByIdAndRemove(req.params.id, function (err, user) {
+      if (err) return res.status(500).send("There was a problem deleting the user.");
+      res.status(200).send("User "+ user.name +" was deleted.");
+  });
+});
 
-
-
-
-
-
+// UPDATE A SINGLE USER IN THE database
+router.put('/:id', (req, res) => {
+  User.findByIdAndUpdate(req.params.id, req.body, {new: true}, (err, user) => {
+    if (err) return res.status(500).send("There was a problem updating the user.");
+    res.status(200).send(user);
+  });
+});
 
 module.exports = router;
